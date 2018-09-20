@@ -13,6 +13,7 @@ using conndatabase.data;
 using System.Net.Sockets;
 using System.Net;
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 namespace conndatabase
 {
@@ -24,7 +25,7 @@ namespace conndatabase
         {
             InitializeComponent();
 
-            loadIp();
+           // loadIp();
         }
         private static string GetARPResult()
         {
@@ -116,6 +117,43 @@ namespace conndatabase
         {
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = con.getDataTable(cmbTableName.Text,cmbDataName.Text);
+        }
+        string ipAddress;
+        private void btnQuetIP_Click(object sender, EventArgs e)
+        {
+            string ipBase = "";
+            btnQuetIP.Enabled = false;
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    ipBase= ip.ToString();
+                    ipAddress = ipBase;                }
+            }
+
+            String[] ipPart = ipBase.Split('.');
+            ipBase = ipPart[0] + "." + ipPart[1] + "." + ipPart[2] + ".";
+
+            for (int i = 0; i < 255; i++)
+            {
+                string ip = ipBase + i.ToString();
+
+                Ping p = new Ping();
+                p.PingCompleted += new PingCompletedEventHandler(p_PingCompleted);
+                p.SendAsync(ip, 100, ip);
+            }
+            cmbSeverName.Text = ipAddress;
+            MessageBox.Show("Đã quét xong IP");
+        }
+        private void p_PingCompleted(object sender, PingCompletedEventArgs e)
+        {
+            PingReply pr = e.Reply;
+            if (e.Reply.Address.ToString() != "0.0.0.0"&& e.Reply.Address.ToString() !=ipAddress)
+            {
+                cmbSeverName.Items.Add(e.Reply.Address.ToString());
+            }
+
         }
     }
 }
