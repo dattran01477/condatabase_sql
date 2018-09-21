@@ -30,20 +30,11 @@ namespace conndatabase.data
         public string User { get => user; set => user = value; }
         public string Pass { get => pass; set => pass = value; }
 
-        public void conn(bool local)
+        public void conn()
         {
             //Data Source = 192.168.137.172; Initial Catalog = sinhvien; User ID = thanhvien1
-            String cn;
-            if(local==true)
-            {
-
-                cn = cn = @"Data Source=" + IpName + ";Integrated Security = True;User ID=" + User + ";Password=" + Pass + ""; 
-            }
-            else
-            {
-                cn = @"Data Source=" + IpName + ";User ID=" + User + ";Password=" + Pass + "";
-            }
             
+            String cn = @"Data Source="+IpName+";User ID="+User+";Password="+Pass+"";
             try
             {
                 con = new SqlConnection(cn);

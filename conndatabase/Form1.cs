@@ -95,7 +95,7 @@ namespace conndatabase
         private void button1_Click(object sender, EventArgs e)
         {
             connect cnn = new connect(cmbSeverName.Text, txtUserName.Text, txtPass.Text);
-            cnn.conn();
+            cnn.conn(ckbLocal.Checked);
             con = cnn;
             cmbDataName.DataSource = cnn.getDataName();
         }
